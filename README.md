@@ -41,9 +41,47 @@ For chat applications specifically, this pattern:
 
 ## Usage Example
 
+```python
+@app.get("/chat/{chat_id}")
+async def chat_endpoint(chat_id: str):
+    # No need to pass chat_id to logging functions - it's automatically included
+    logger.info("Received request")
+
+    # Process the request...
+
+    # All logs from this request will include the chat_id
+    return {"message": f"Processing chat {chat_id}"}
+```
+
 ## Why This Matters
 
+Traditional approaches require manually passing context through every function call:
+
+```python
+# Without contextual variables - cumbersome!
+def process_message(message, chat_id):
+    logger.info(f"Processing message for chat {chat_id}")
+    result = analyze_message(message, chat_id)
+    return format_response(result, chat_id)
+
+def analyze_message(message, chat_id):
+    logger.debug(f"Analyzing message for chat {chat_id}")
+    # etc.
+```
+
 With this approach, the code becomes much cleaner:
+
+```python
+# With contextual variables - elegant!
+def process_message(message):
+    logger.info("Processing message")  # chat_id automatically included
+    result = analyze_message(message)
+    return format_response(result)
+
+def analyze_message(message):
+    logger.debug("Analyzing message")  # chat_id automatically included
+    # etc.
+```
 
 ## Implementation Requirements
 
